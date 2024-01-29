@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>number guessing</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+            body {
+                background-color: #333333;
+                color: white;
+                font-family: "Inter", sans-serif;
+                text-align: center;
+            }
+            #previous {
+                visibility: hidden;
+            }
+            #message {
+                visibility: hidden;
+                text-align: center;
+                width: 400px;
+                margin: auto;
+                display: inline-block;
+            }
+            #highlow {
+                visibility: hidden;
+            }
+            #startnew {
+                visibility: hidden;
+                text-decoration: none;
+            }
+        </style>
+</head>
+<body>
+    <h1>Number Guessing Game</h1>
+    <p>Number between 1 and 100. Guess in 10 turns or fewer.</p>
+
+    <br><label for="guessing">Enter a guess:</label>
+    <input type="text" id="guessing" name="inputguess" onfocus="focused()" onblur="blurred()">
+    <button onclick="Submit()">Submit</button>
+
+    <br><p id="previous">Previous guesses: </p>
+
+    <br><p id="message"></p>
+
+    <br><p id="highlow"></p>
+    <button id="startnew" onclick="Restart()">Restart</button>
+
+        <script>
+            let answer = document.getElementById("guessing");
+            let message = document.getElementById("message");
+            let updown = document.getElementById("highlow");
+            let startButton = document.getElementById("startnew");
+            let previous = document.getElementById("previous");
+            let focusCount = 0;
+            let valueAnswer = 0;
+            let randNum = makeRandom();
+            let firstSub = 0;
+            let subCount = 1;
+
+            function focused() {
+                focusCount = 1;
+            }
+
+            function blurred(){
+                focusCount = 0;
+            }
+
+            function makeRandom(){
+                return Math.floor(Math.random() * 100) + 1;
+            }
+
+            document.addEventListener("keyup", function(){
+                if(event.key === "Enter" && focusCount === 1){
+                    Submit();
+                } else if (event.key === "Enter" && focusCount === 0){
+                    Restart();
+                }
+            });
+
+            function Restart(){
+                randNum = makeRandom();
+                message.style.visibility = "hidden";
+                updown.style.visibility = "hidden";
+                previous.style.visibility = "hidden";
+                firstSub = 0;
+                answer.value = " ";
+                startButton.style.visibility = "hidden";
+                previous.innerHTML = "Previous guesses:";
+                subCount = 1;
+            }
+
+            function Submit(){
+                valueAnswer = answer.value;
+
+                if(firstSub === 0){
+                    message.style.visibility = "visible";
+                    updown.style.visibility = "visible";
+                    previous.style.visibility = "visible";
+                    firstSub += 1;
+                }
+
+                if(subCount < 10){
+                    if(valueAnswer == randNum){
+                        message.style.backgroundColor = "green";
+                        message.innerHTML = "Congratulations! You got it right!";
+                        updown.style.visibility= "hidden";
+                        startButton.style.visibility = "visible";
+                        previous.innerHTML += valueAnswer;
+                    } else if(valueAnswer >= randNum){
+                        message.style.backgroundColor = "red";
+                        message.innerHTML = "Wrong!";
+                        updown.innerHTML = "Last guess was too high!";
+                        previous.innerHTML += " " + valueAnswer;
+                        subCount++;
+                        answer.value = " ";
+                    } else if(valueAnswer <= randNum){
+                        message.style.backgroundColor = "red";
+                        message.innerHTML = "Wrong!";
+                        updown.innerHTML = "Last guess was too low!";
+                        previous.innerHTML += " " + valueAnswer;
+                        subCount++;
+                        answer.value = " ";
+                    }
+                } else if (subCount == 10 && valueAnswer == randNum){
+                        message.style.backgroundColor = "green";
+                        message.innerHTML = "Congratulations! You got it right!";
+                        updown.style.visibility= "hidden";
+                        startButton.style.visibility = "visible";
+                        previous.innerHTML += valueAnswer;
+                } else {
+                    message.style.backgroundColor = "red";
+                    message.innerHTML = "GAME OVER!";
+                    updown.innerHTML = "The number is " + randNum + ".";
+                    startButton.style.visibility = "visible";
+                }
+            }
+        </script>
+</body>
+</html>
